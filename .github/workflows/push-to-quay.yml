@@ -1,0 +1,31 @@
+name: 自動打包並推送到 Quay.io
+
+# 觸發條件：只要有人推送到 main 分支就啟動
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest # GitHub 會免費開一台 Ubuntu 虛擬機幫你做事
+
+    steps:
+    # 1. 把你的程式碼下載到虛擬機裡
+    - name: 下載程式碼
+      uses: actions/checkout@v3
+
+    # 2. 拿出保險箱的密碼，登入 Quay.io
+    - name: 登入 Quay.io 倉庫
+      uses: docker/login-action@v2
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+
+    # 3. 執行 Docker Build 並直接 Push 上去！
+    - name: 打包並推送 Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: quay.io/lutomica/hello-world:v1
