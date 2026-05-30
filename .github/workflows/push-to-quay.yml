@@ -28,4 +28,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: quay.io/lutomica/hello-world:v1
+        tags: quay.io/lutomica/cicd:v1
